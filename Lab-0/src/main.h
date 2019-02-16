@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void generateCounts(long int count);
+#define EPS 100
+#define FUNCTION(X) X
+
+void generateNumbers(long int cnt);
 
 #endif

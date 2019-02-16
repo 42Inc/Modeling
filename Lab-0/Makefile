@@ -17,8 +17,11 @@ $(dirs):
 ./obj/main.o: ./src/main.c
 	gcc -c ./src/main.c -Wall -o ./obj/main.o $(INCLUDES)
 
-.PHONY: clean
+.PHONY: clean exec
 clean:
 	rm -r -f bin/
 	rm -r -f obj/
-	rm counts.*
+	rm result.*
+
+exec:
+	make ; ./bin/cmpl ; ./mkgraph.sh
