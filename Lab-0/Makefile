@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g3 -O0 -Wall
+CFLAGS = -g3 -O0 
 LIB = -lm
 INCLUDES = -I src/
 dirs = ./bin ./obj
