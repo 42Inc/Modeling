@@ -12,10 +12,13 @@ set format y "%1.0f"
 set xlabel "x" font "Arial, 16"
 set ylabel "y" font "Arial, 16"
 set xtics 0.1 font "Arial, 10"
-set ytics 10 font "Arial, 10"
+set ytics 100 font "Arial, 10"
 set rmargin 4
 set tmargin 2
 set mxtics
 
-set output 'results.png'
-plot "results.dat" using 1:2 title "results" with linespoints ls 1;
+set output 'result.png'
+plot "result.dat" using 1:2 title "result" with linespoints ls 1;
+
+set output '/share/pub/result.png'
+plot "result.dat" using 1:2 title "result" with linespoints ls 1;

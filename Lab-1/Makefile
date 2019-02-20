@@ -6,6 +6,7 @@ all: MAIN
 
 run: MAIN
 	$(BIN)
+	sort results.dat > result.dat
 	./mkgraph.sh
 
 MAIN: ./obj/main.o
