@@ -11,8 +11,8 @@ set format x "%1.2f"
 set format y "%1.0f"
 set xlabel "x" font "Arial, 16"
 set ylabel "y" font "Arial, 16"
-set xtics 0.1 font "Arial, 10"
-set ytics 100 font "Arial, 10"
+set xtics 0.5 font "Arial, 10"
+set ytics 1 font "Arial, 10"
 set rmargin 4
 set tmargin 2
 set mxtics
