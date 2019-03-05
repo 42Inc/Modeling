@@ -1,21 +1,30 @@
-CC=gcc
-CFLAGS=-O0 -g3 -lm
-BIN=./bin/main
+CC = gcc
+QUIET = @
+CFLAGS = -g3 -O0 -Wall
+OFLAGS = -c -Wall
+LIB = -lm
 
-all: MAIN
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDES = -I $(SRC_DIR)
+DIRS = $(BIN_DIR) $(OBJ_DIR)
+OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/extralib.o
 
-run: MAIN
-	$(BIN)
-	sort results.dat > result.dat
-	./mkgraph.sh
+.PHONY: all bins objs clean
+all: bins
 
-MAIN: ./obj/main.o
-	$(CC) ./obj/main.o -o $(BIN) $(CFLAGS)
+bins: $(DIRS) objs
+	$(CC) $(OBJ) $(CFLAGS) -o $(BIN_DIR)/cmpl $(LIB)
 
-./obj/main.o: ./src/main.c
-	$(CC) -c ./src/main.c -o ./obj/main.o $(CFLAGS)
+$(DIRS):
+	mkdir $(OBJ_DIR)
+	mkdir $(BIN_DIR)
+
+objs:
+	$(CC) $(OFLAGS) $(SRC_DIR)/extralib.c -o $(OBJ_DIR)/extralib.o $(INCLUDES)
+	$(CC) $(OFLAGS) $(SRC_DIR)/main.c -o $(OBJ_DIR)/main.o $(INCLUDES)
 
 clean:
-	rm -rf ./obj/*.o
-
-restruct: clean all
+	$(QUIET)rm -rfv $(BIN_DIR)/
+	$(QUIET)rm -rfv $(OBJ_DIR)/

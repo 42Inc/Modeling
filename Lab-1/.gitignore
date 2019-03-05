@@ -1,4 +1,2 @@
-obj/*
-bin/*
-*.png
-*.dat
+/bin
+/obj
