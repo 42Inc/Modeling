@@ -18,13 +18,11 @@ bins: $(DIRS) objs
 	$(CC) $(OBJ) $(CFLAGS) -o $(BIN_DIR)/cmpl $(LIB)
 
 $(DIRS):
-	mkdir $(OBJ_DIR)
-	mkdir $(BIN_DIR)
+	mkdir $(DIRS)
 
 objs:
 	$(CC) $(OFLAGS) $(SRC_DIR)/extralib.c -o $(OBJ_DIR)/extralib.o $(INCLUDES)
 	$(CC) $(OFLAGS) $(SRC_DIR)/main.c -o $(OBJ_DIR)/main.o $(INCLUDES)
 
 clean:
-	$(QUIET)rm -rfv $(BIN_DIR)/
-	$(QUIET)rm -rfv $(OBJ_DIR)/
+	$(QUIET)rm -rfv $(DIRS)/
