@@ -9,7 +9,7 @@ OBJ_DIR = obj
 BIN_DIR = bin
 INCLUDES = -I $(SRC_DIR)
 DIRS = $(BIN_DIR) $(OBJ_DIR) result
-OBJ = $(OBJ_DIR)/reject.o
+OBJ = $(OBJ_DIR)/reject.o $(OBJ_DIR)/extralib.o
 
 .PHONY: all bins objs clean rebuild exec
 all: bins
@@ -22,6 +22,7 @@ $(DIRS):
 
 objs:
 	$(CC) $(OFLAGS) $(SRC_DIR)/reject.cpp -o $(OBJ_DIR)/reject.o $(INCLUDES)
+	$(CC) $(OFLAGS) $(SRC_DIR)/extralib.cpp -o $(OBJ_DIR)/extralib.o $(INCLUDES)
 
 clean:
 	$(QUIET)rm -rfv $(DIRS)
