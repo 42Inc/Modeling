@@ -9,16 +9,19 @@
 #include <vector>
 
 #include "../include/extralib.h"
-#define pi 3.14
+
+#define MAX 100000
+#define a_ -0.5379
+
 using namespace std;
 
 int main(int argc, char const *argv[]) {
   srand(time(NULL));
-	string s[3] = {"./result/A.dat", "./result/A_.dat", "./result/rej.dat"};
+	char* s[3] = {"./result/repeats.dat", "./result/no_repeats.dat", "./result/reject.dat"};
 
-	dist_wo_repetition(10, 10000, s[1]);
-	dist_with_repetition(10, 10000, s[0]);
-	_methodRej(40, 100000, s[2].c_str());
+	with_repeats(10, s[0]);
+	no_repeats(10, s[1]);
+  methodReject(s[2]);
 
 	return EXIT_SUCCESS;
 }

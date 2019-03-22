@@ -12,15 +12,17 @@
 #include <vector>
 
 #include "../include/extralib.h"
-#define pi 3.14
+
+#define MAX 100000
+#define a_ -0.5379
+
 using namespace std;
 
 #include "../include/extralib.h"
 
-float methodReject();
-double func(double x);
-void _methodRej(int n, int m, const char *filename);
-void dist_with_repetition(int n, int nexp, string& filename);
-void dist_wo_repetition(int n, int nexp, string& filename);
+float func(float x);
+void methodReject(const char* filename);
+void with_repeats(int N, const char * filename);
+void no_repeats(int N, const char * filename);
 
 #endif

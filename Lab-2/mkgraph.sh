@@ -21,11 +21,11 @@ set rmargin 4
 set tmargin 2
 set mxtics
 
-set output './result/result_1.png'
-plot for [col=2:3] './result/A.dat' using 1:col with linespoints ls col-1 title "WTF?"
+set output './result/result_NR.png'
+plot './result/no_repeats.dat' using 1:2 with linespoints ls 1 title "WTF?"
 
-set output './result/result_2.png'
-plot './result/A_.dat' using 1:2 with linespoints ls 1 title "WTF?"
+set output './result/result_WR.png'
+plot for [col=2:3] './result/repeats.dat' using 1:col with linespoints ls col-1 title "WTF?"
 
-set output './result/result_3.png'
+set output './result/result_Reject.png'
 plot './result/rej.dat' using 1:2 with linespoints ls 2 title "WTF?"

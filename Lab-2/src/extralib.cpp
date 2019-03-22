@@ -1,99 +1,99 @@
 #include "../include/extralib.h"
 
-
-double func(double x) {
-  double a = 0.125;
-  double y = 0.0;
-  if ((x > -4) && (x <= 5))
-    y = sqrt(x + 4) * a;
-  return y;
-}
-
-/*	Метод отбраковки	*/
-float methodReject() {
-	float a = 0, b = pi, c = 1, x1, x2;
-	do {
-		x1 = (float) rand() / RAND_MAX;
-		x2 = (float) rand() / RAND_MAX;
-	} while (func(a + (b - a) * x1) < c * x2);
-
-	return a + (b - a) * x1;
-}
-
-/*	Распределение без повторений */
-void dist_wo_repetition(int n, int nexp, string& filename) {
-	vector<int> nums, temp;
-	int it, k = 3 * n / 4, mas[n], part = nexp / k + 1;
-	float p;
-
-	memset(mas, 0, sizeof(int) * n);
-	for(int i = 0; i < n; i++)
-		temp.push_back(i);
-	for(int j = 0; j < part; j++) {
-		nums = temp;
-		if (j == part - 1) k = nexp % k;
-		for(int i = 0; i < k; i++) {
-			p = 1.0 / (n - i);
-			it = (float) rand() / RAND_MAX / p;
-			++mas[nums[it]];
-			nums.erase(nums.begin() + it);
-		}
+float func(float x) {
+	float y;
+	if (x <= -4 && x >= (5 * a_) ) {
+		y = sqrt(x + 4);
+	} else {
+		y = 0;
 	}
+	return y;
+}
 
-	FILE *fd_out = fopen(filename.c_str(), "w");
+void methodReject(const char* filename) {
+	float x1, x2;
+	int hit[20];
+	memset(hit, 0, sizeof(int) * 20);
+
+	for (int i = 0; i < MAX; i++) {
+		float a = -4, b = 5 * a_, c = 1.1832;
+		do {
+      x1 = a + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(b-a)));
+			x2 = a + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(b-a)));
+		} while (func(a + (b - a) * x1) < c * x2);
+		x2 *= c;
+		x1 = a + (b - a) * x1;
+		hit[(int)(x1 / 0.1)]++;
+    printf("%d\n", hit[(int)(x1 / 0.1)]);
+  }
+	FILE *fd_out = fopen(filename, "w");
   if (fd_out) {
-    for(int i = 0; i < n; i++)
-      fprintf(fd_out, "%d\t%.4f\n", i, (float) mas[i] / nexp);
+    for (int i = 0; i < 20; i++) {
+      fprintf(fd_out, "%d\n", hit[i]);
+    }
     fclose(fd_out);
   }
 }
 
-/*	Распределение с повторением */
-void dist_with_repetition(int n, int nexp, string& filename) {
-	float p = 1, intervals[n], x, sum;
-	int mas[n];
+void with_repeats(int N, const char * filename) {
+	float a = 1, mas[N], chance;
+	int hit[N];
+	memset(hit, 0, sizeof(int) * N);
 
-	memset(mas, 0, sizeof(int) * n);
-	for(int i = 0; i < n - 1; i++) {
-		intervals[i] = abs(remainder((float) rand() / RAND_MAX, p));
-		p -= intervals[i];
+	for (int i = 0; i < N - 1; i++)
+	{
+		mas[i] = abs(remainder((float) rand() / RAND_MAX, a));
+		a -= mas[i];
 	}
 
-	intervals[n - 1] = p;
-	for(int i = 0; i < nexp; i++) {
-		x = (float) rand() / RAND_MAX;
-		sum = 0;
-		for (int j = 0; j < n; j++) {
-			sum += intervals[j];
-			if (x < sum) {
-				++mas[j];
+	mas[N - 1] = a;
+
+	for (int i = 0; i < MAX; i++) {
+		chance = (float) rand() / RAND_MAX;
+		float sum = 0;
+		for (int j = 0; j < N; j++) {
+			sum += mas[j];
+			if (chance < sum) {
+				++hit[j];
 				break;
 			}
 		}
 	}
 
-	FILE *fd_out = fopen(filename.c_str(), "w");
+	FILE *fd_out = fopen(filename, "w");
   if (fd_out) {
-    for(int i = 0; i < n; i++)
-      fprintf(fd_out, "%d\t%.4f\t%.4f\n", i, intervals[i], (float) mas[i] / nexp);
+    for (int i = 0; i < N; i++) {
+      fprintf(fd_out, "%d\t%.4f\t%.d\n", i, mas[i] * MAX, hit[i]);
+    }
     fclose(fd_out);
   }
 }
 
-void _methodRej(int n, int m, const char *filename) {
-	float x;
-	int mas[n];
+void no_repeats(int N, const char * filename) {
+	vector<int> nums, temp;
+	int it, k = 3 * N / 4;
+	int hit[N], part = MAX / k + 1;
+	float p;
 
-	memset(mas, 0, sizeof(int) * n);
-	for (int i = 0; i < m; i++) {
-		x = methodReject();
-		++mas[(int)(x / pi * n)];
+	memset(hit, 0, sizeof(int) * N);
+	for(int number = 0; number < N; number++) {
+		temp.push_back(number);
 	}
-
-  FILE *fd_out = fopen(filename, "w");
+	for(int j = 0; j < part; j++) {
+		nums = temp;
+		if (j == part - 1) k = MAX % k;
+		for(int i = 0; i < k; i++) {
+			p = 1.0 / (N - i);
+			it = (float) rand() / RAND_MAX / p;
+			++hit[nums[it]];
+			nums.erase(nums.begin() + it);
+		}
+	}
+	FILE *fd_out = fopen(filename, "w");
   if (fd_out) {
-    for (int i = 0; i < n; i++)
-      fprintf(fd_out, "%d\t%d\n", i, mas[i]);
+    for(int number = 0; number < N; number++) {
+      fprintf(fd_out, "%d\t%.d\n", number, hit[number]);
+    }
     fclose(fd_out);
   }
 }
