@@ -36,12 +36,10 @@ def reject():
 def reject_check():
 
     hits = np.zeros(N)
-    index = 0
     for i in range(N):
         res = reject()
         #print res
-        hits[index] += int(res[0]*10)
-        index += 1
+        hits[int(res[0]*10)] += 1
 
     out = ''
     for i in range(30):
