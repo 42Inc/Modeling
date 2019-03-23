@@ -18,5 +18,5 @@ set rmargin 4
 set tmargin 2
 set mxtics
 
-set output 'result.png'
-plot "result.dat" using 1:2 title "counts"  with lp lw 2 pt 5 ps 1;
+set output 'counts.png'
+plot "counts.dat" using 1:2 title "counts"  with lp lw 2 pt 5 ps 1;

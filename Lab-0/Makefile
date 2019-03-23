@@ -15,7 +15,7 @@ $(dirs):
 	mkdir bin
 
 ./obj/main.o: ./src/main.c
-	gcc -c ./src/main.c -Wall -o ./obj/main.o $(INCLUDES)
+	gcc -c ./src/main.c -Wall -o ./obj/main.o $(INCLUDES) $(CFLAGS)
 
 .PHONY: clean exec
 clean:
