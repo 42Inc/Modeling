@@ -1,27 +1,33 @@
-CC = gcc
-CFLAGS = -g3 -O0 
+CC = g++
+QUIET = @
+CFLAGS = -g3 -O0 -Wall
+OFLAGS = -c -Wall
 LIB = -lm
-INCLUDES = -I src/
-dirs = ./bin ./obj
-main_obj = ./obj/main.o
 
-all: ./bin/main
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDES = -I $(SRC_DIR)
+DIRS = $(BIN_DIR) $(OBJ_DIR) result
+OBJ = $(OBJ_DIR)/main.o
 
-./bin/main: $(dirs) $(main_obj)
-	$(CC) $(main_obj) $(CFLAGS) -o ./bin/cmpl $(LIB)
+.PHONY: all bins objs clean rebuild exec
+all: bins
 
-$(dirs):
-	mkdir obj
-	mkdir bin
+bins: $(DIRS) objs
+	$(CC) $(OBJ) $(CFLAGS) -o $(BIN_DIR)/cmpl $(LIB)
 
-./obj/main.o: ./src/main.c
-	gcc -c ./src/main.c -Wall -o ./obj/main.o $(INCLUDES)
+$(DIRS):
+	$(QUIET)mkdir $(DIRS)
 
-.PHONY: clean exec
+objs:
+	$(CC) $(OFLAGS) $(SRC_DIR)/main.c -o $(OBJ_DIR)/main.o $(INCLUDES)
+
 clean:
-	rm -r -f bin/
-	rm -r -f obj/
-	rm result.*
+	$(QUIET)rm -rfv $(DIRS)
+
+rebuild:
+	make clean ; make
 
 exec:
-	make ; ./bin/cmpl ; ./mkgraph.sh
+	make clean ; make ; ./bin/cmpl ; ./mkgraph.sh

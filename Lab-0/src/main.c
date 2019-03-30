@@ -1,36 +1,70 @@
-#include "main.h"
+#include "../include/main.h"
 
-#define EPS 100
-#define FUNCTION(X) X
+using namespace std;
 
-int numeric_count[EPS + 1];
-int length = 0;
-int getrand(int min, int max) {
-  max *= EPS;
-  max += 1;
-  min *= EPS;
-  return ((int)(rand() / (RAND_MAX + 1.0) * (max - min) + min));
+void xi_2(double *masNum) {
+	int mas[I], i;
+	double sum = 0, V = 0;
+
+  string fname = "./result/v.dat";
+	ofstream fout(fname.c_str());
+
+	for(int j = 0; j < Nexp; j++) {
+		memset(mas, 0, sizeof(mas));
+		sum = 0;
+
+		for(i = 0; i < N; i++) {
+			masNum[i] = (double)rand() / RAND_MAX;
+			mas[(int)(masNum[i] * I)] += 1;
+		}
+
+		for(i = 0; i < I; i++)
+			sum += mas[i] * mas[i] * I;
+		V += sum / N - N;
+	}
+
+	V /= Nexp;
+	fout << V << endl;
+
+	fout.close();
 }
 
-int main(int argc, char** argv) {
-  generateCounts(argc > 1 ? atol(argv[1]) : 100000);
-  return 0;
+void autoCor(double *masNum) {
+	int i;
+	double x = 0, y = 0, xy = 0,
+		Gx = 0, Gy = 0, Acor = 0;
+
+  string fname = "./result/autocor.dat";
+	ofstream fout(fname.c_str());
+
+  for (L = 1; L < N / 2; L++) {
+		for(i = L; i < N; i++) {
+			x += masNum[i];
+			y += masNum[i - L];
+			xy += masNum[i] * masNum[i - L];
+		}
+
+		x /= N - L; y /= N - L; xy /= N - L;
+		for(i = L; i < N; i++) {
+			Gx += pow(masNum[i] - x, 2);
+			Gy += pow(masNum[i - L] - y, 2);
+		}
+
+		Gx = sqrt(Gx / (N - L));
+		Gy = sqrt(Gy / (N - L));
+		Acor = (xy - x * y) / (Gx * Gy);
+		fout << L << " " << Acor << endl;
+	}
+
+  fout.close();
 }
 
-void generateCounts(long int count) {
-  int iterator = 0;
-  int num = 0;
-  int i;
-  FILE* out_descriptor = fopen("counts.dat", "w");
-  out_descriptor = out_descriptor == NULL ? stdout : out_descriptor;
-  length = EPS + 1;
-  for (i = 0; i < length; ++i)
-    numeric_count[i] = 0;
-  while (iterator++ < count) {
-    num = getrand(0, 1);
-    numeric_count[num]++;
-  }
-  for (i = 0; i < length; ++i) {
-    fprintf(out_descriptor, "%lf\t%d\n", (((double)i) / EPS), numeric_count[i]) ;
-  }
+int main(int argc, char **argv) {
+  srand(time(NULL));
+	double masNum[N];
+
+	xi_2(masNum);
+	autoCor(masNum);
+
+  return EXIT_SUCCESS;
 }
