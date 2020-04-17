@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
   } else {
     m = gen;
   }
-  /* Вызов генератора матрицы. Вернет !0, если будет ошибка */
+  /* Вызов генератора матрицы. Вернет 253, если будет ошибка */
   if (m == gen) {
     if (generator(n, matrix)) return 253;
   } else {
