@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* Генератор матрицы */
 int generator(int n, double** matrix) {
@@ -17,11 +19,19 @@ int generator(int n, double** matrix) {
     }
   }
 
-  /* Процесс генерации. Заполняем матрицу значениями 1/n*/
+  /* Процесс генерации. Заполняем матрицу значениями 1/n */
   for (i = 0; i < n; ++i) {
     for (j = 0; j < n; ++j) {
-      matrix[i][j] = 1 / n;
+      matrix[i][j] = 1.0 / n;
     }
+  }
+
+  /* Печать матрицы в 2 */
+  for (i = 0; i < n; ++i) {
+    for (j = 0; j < n; ++j) {
+      fprintf(stderr, "%.02lf ", matrix[i][j]);
+    }
+      fprintf(stderr, "\n");
   }
   return 0;
 }
