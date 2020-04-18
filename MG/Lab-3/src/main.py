@@ -19,7 +19,7 @@ def rowsum(row, matrix):
 	return result
 
 def colsum(col, matrix):
-	int i = 0
+	i = 0
 	result = 0.0
 	for i in range(n):
 		result += matrix[i][col]
@@ -41,8 +41,12 @@ def generator(matrix):
 		for j in range(n):
 			direction = rnd(0, 2)
 
-			while ((row = rnd(0, n)) == i)
-			while ((col = rnd(0, n)) == j)
+			row = rnd(0, n)
+			col = rnd(0, n)
+			while (row == i):
+				row = rnd(0, n)
+			while (col == j):
+				col = rnd(0, n)
 
 			if (direction):
 				value = rnd(0, MIN(matrix[row][j], matrix[i][col]) * eps) / eps
@@ -67,27 +71,29 @@ def main():
 	j = 0
 	tmp_double = 0.0
 	filename = "matrix.dat"
-	matrix = NULL
 	repeats = 10000
 	step = 0
 	state = 0
 	prob = 0.0
 
 	matrix = [[ 0.0 for cnt in range(n)] for cnt in range(n)]
+	vector = [0 for cnt in range(n)]
 	generator(matrix)
 
-	do {
-		prob = rnd(0, eps) / eps;
-		print(step, state)
-		tmp_double = 0.0;
-		for (i = 0; i < n; ++i) {
+
+	while (step < repeats):
+		vector[state] += 1
+		prob = rnd(0, eps) / eps
+		tmp_double = 0.0
+		for i in range(n):
 			tmp_double += matrix[state][i];
-			if (prob < tmp_double) {
-				state = i;
-				break;
-			}
-		}
-		++step;
-	} while (step < repeats);
-	return EXIT_SUCCESS;
-}
+			if (prob < tmp_double):
+				state = i
+				break
+		step += 1
+
+	for i in range(n):
+		print(i, vector[i])
+
+if __name__ == '__main__':
+	main()
