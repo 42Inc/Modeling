@@ -115,12 +115,14 @@ int main(int argc, char** argv) {
 
   /* Матрица */
   double** matrix = NULL;
+  /* Вектор встречаемости состояний */
+  int* vector = NULL;
 
   /* Размер матрицы - по умолчанию 5 */
   int n = argv[1] ? atoi(argv[1]) : 5;
 
   /* Количество переходов в имитации */
-  int repeats = 10000;
+  int repeats = 1000;
   /* Текущий шаг в имитации */
   int step = 0;
   /* Состояние. Стартовое - 0 */
@@ -129,11 +131,13 @@ int main(int argc, char** argv) {
   double prob = 0.0;
 
   /* Выделение памяти под матрицу */
-  matrix = malloc(n * sizeof(double));
+  matrix = (double**)malloc(n * sizeof(double*));
+  vector = (int*)calloc(n, sizeof(int));
+
   /* Не выделилась память */
-  if (!matrix) return 255;
+  if (!matrix || !vector) return 255;
   for (i = 0; i < n; ++i) {
-    matrix[i] = malloc(n * sizeof(double));
+    matrix[i] = (double*)malloc(n * sizeof(double));
     /* Не выделилась память */
     if (!matrix[i]) {
       for (j = 0; j < i; ++j) free(matrix[j]);
@@ -184,9 +188,8 @@ int main(int argc, char** argv) {
 
   do {
     /* Генерация вероятности перехода */
+    ++vector[state];
     prob = getrand(0, eps) / eps;
-    /* Печать состояния. Шаг - состояние */
-    fprintf(stdout, "%d %d\n", step, state);
     /* Переход в состояние на основе вероятности */
     tmp_double = 0.0;
     for (i = 0; i < n; ++i) {
@@ -199,6 +202,8 @@ int main(int argc, char** argv) {
     ++step;
   } while (step < repeats);
 
+  /* Печать состояния. Состояние - количество */
+  for (i = 0; i < n; ++i) fprintf(stdout, "%d %d\n", i, vector[i]);
   /*
    * Mr. TeamLead, why only here you use a predefined constant,
    * ignoring all other returns?
