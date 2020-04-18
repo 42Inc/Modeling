@@ -12,10 +12,7 @@ def genDist():
 	# Generating distances for pathArray
 	for i in range(1, matrixSize):
 		for j in range(matrixSize):
-			if (i == 0):
-				pathArray[i][j] = pathArray[matrixSize-1][j-1]
-			else:
-				pathArray[i][j] = pathArray[i-1][j-1]
+			pathArray[i][j] = pathArray[i-1][j-1]
 	print(pathArray)
 	saveData(pathArray)
 
