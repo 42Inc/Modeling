@@ -20,4 +20,4 @@ set mxtics
 # set rmargin 4
 # set tmargin 2
 
-plot "data/rate.dat" using 1:xtic(1) title "T" linecolor rgb 'blue'
+plot "data/rate.dat" using 2:xtic(1) title "T" linecolor rgb 'blue'
