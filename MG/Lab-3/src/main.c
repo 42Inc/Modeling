@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
   int n = argv[1] ? atoi(argv[1]) : 5;
 
   /* Количество переходов в имитации */
-  int repeats = 10;
+  int repeats = 10000;
   /* Текущий шаг в имитации */
   int step = 0;
   /* Состояние. Стартовое - 0 */
