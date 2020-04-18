@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 filePath = "data/matrix.dat"
-firstString = [0.4, 0.5, 0.1, 0, 0]
+firstString = [0.4, 0.5, 0.1, 0, 0, 0, 0, 0, 0, 0]
 matrixSize = len(firstString)
 
 def genDist():
