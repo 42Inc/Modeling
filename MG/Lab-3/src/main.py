@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 import sys
 from random import randint as rnd
+from matplotlib import pyplot as plt
 
 eps = 100.0
 n = 5
 
 def MIN(x, y):
 	return {
-		x < y : x,
-		x > y : y
+		x < y: int(x),
+		x >= y: int(y)
 	}[1]
 
 def rowsum(row, matrix):
@@ -41,13 +42,14 @@ def generator(matrix):
 		for j in range(n):
 			direction = rnd(0, 2)
 
-			row = rnd(0, n)
-			col = rnd(0, n)
+			row = rnd(0, n-1)
+			col = rnd(0, n-1)
 			while (row == i):
-				row = rnd(0, n)
+				row = rnd(0, n-1)
 			while (col == j):
-				col = rnd(0, n)
+				col = rnd(0, n-1)
 
+			print(i,j, row, col)
 			if (direction):
 				value = rnd(0, MIN(matrix[row][j], matrix[i][col]) * eps) / eps
 				matrix[i][j] += value
@@ -66,12 +68,20 @@ def generator(matrix):
 			print(matrix[i][j])
 	print()
 
+def drawGraph(y_arr):
+	x_arr = [cnt for cnt in range(n)]
+	plt.plot(x_arr, y_arr, label="Не совсем, но цепь Маркова")
+	plt.ylabel("Количество входов")
+	plt.xlabel("Номер состояния")
+	plt.legend()
+	plt.show()
+
 def main():
 	i = 0
 	j = 0
 	tmp_double = 0.0
 	filename = "matrix.dat"
-	repeats = 10000
+	repeats = 1000
 	step = 0
 	state = 0
 	prob = 0.0
@@ -92,8 +102,7 @@ def main():
 				break
 		step += 1
 
-	for i in range(n):
-		print(i, vector[i])
+	drawGraph(vector)
 
 if __name__ == '__main__':
 	main()
