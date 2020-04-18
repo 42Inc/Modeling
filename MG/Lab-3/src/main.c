@@ -110,6 +110,7 @@ int main(int argc, char** argv) {
   double tmp_double = 0.0;
 
   char* filename = "matrix.dat";
+  FILE* fd = NULL;
   enum method { gen, file };
   enum method m = gen;
 
@@ -120,7 +121,7 @@ int main(int argc, char** argv) {
   int n = argv[1] ? atoi(argv[1]) : 5;
 
   /* Количество переходов в имитации */
-  int repeats = 10000;
+  int repeats = 10;
   /* Текущий шаг в имитации */
   int step = 0;
   /* Состояние. Стартовое - 0 */
@@ -128,11 +129,10 @@ int main(int argc, char** argv) {
   /* Псевдослучайная вероятность для перехода. Точность - до eps-ых */
   double prob = 0.0;
 
+  /* Выделение памяти под матрицу */
   matrix = malloc(n * sizeof(double));
-
   /* Не выделилась память */
   if (!matrix) return 255;
-
   for (i = 0; i < n; ++i) {
     matrix[i] = malloc(n * sizeof(double));
     /* Не выделилась память */
@@ -158,13 +158,35 @@ int main(int argc, char** argv) {
   if (m == gen) {
     if (generator(n, matrix)) return 253;
   } else {
-    /* Чтение из файла*/
+    /* Чтение из файла */
+    /* Ошибка открытия файла */
+    if (!(fd = fopen(filename, "r"))) {
+      return 252;
+    }
+
+    /* Читаем матрицу */
+    for (i = 0; i < n; ++i) {
+      for (j = 0; j < n; ++j) {
+        fscanf(fd, "%lf", &matrix[i][j]);
+      }
+    }
+
+    /* Печать матрицы в 2 знака + печать контрольных сумм */
+    for (i = 0; i < n; ++i) {
+      for (j = 0; j < n; ++j) fprintf(stderr, "%.02lf ", matrix[i][j]);
+      /* Контрольная сумма строки */
+      fprintf(stderr, "%.02lf\n", rowsum(i, n, matrix));
+    }
+
+    /* Контрольная сумма столбцов */
+    for (i = 0; i < n; ++i) fprintf(stderr, "%.02lf ", colsum(i, n, matrix));
+    fprintf(stderr, "\n");
   }
 
   do {
     /* Генерация вероятности перехода */
     prob = getrand(0, eps) / eps;
-    /* Печать состояния. Шаг - состояние */
+    /* Печать состояния. Шаг - состояние - вероятность*/
     fprintf(stdout, "%d %d %.02lf\n", step, state, prob);
     /* Переход в состояние на основе вероятности */
     tmp_double = 0.0;
