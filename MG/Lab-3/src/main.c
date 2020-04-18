@@ -88,7 +88,6 @@ int generator(int n, double** matrix) {
       }
     }
   }
-  fprintf(stderr, "\n");
 
   /* Печать матрицы в 2 знака + печать контрольных сумм */
   for (i = 0; i < n; ++i) {
@@ -186,8 +185,8 @@ int main(int argc, char** argv) {
   do {
     /* Генерация вероятности перехода */
     prob = getrand(0, eps) / eps;
-    /* Печать состояния. Шаг - состояние - вероятность*/
-    fprintf(stdout, "%d %d %.02lf\n", step, state, prob);
+    /* Печать состояния. Шаг - состояние */
+    fprintf(stdout, "%d %d\n", step, state);
     /* Переход в состояние на основе вероятности */
     tmp_double = 0.0;
     for (i = 0; i < n; ++i) {
