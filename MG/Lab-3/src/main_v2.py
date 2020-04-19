@@ -14,10 +14,6 @@ def genMatrix(matrix):
 	for i in range(matrixSize):
 		for j in range(matrixSize):
 			matrix[i][j] = 1.0 / matrixSize
-
-	for i in range(matrixSize):
-		print(matrix[i])
-
 	for i in range(matrixSize):
 		for j in range(matrixSize):
 			direction = rnd(0, 2)
@@ -32,29 +28,27 @@ def genMatrix(matrix):
 			if (direction):
 				value = rnd(0, int(MIN(matrix[row][j], matrix[i][col]) * eps))
 				value = float(float(value) / float(eps))
-				print("if 1 value: ",value,"i,j: ",i,j,"row,col:",row,col,"matrix:",matrix[i][j],matrix[row][j],matrix[i][col],matrix[row][col])
 				matrix[i][j] += value
 				matrix[row][j] -= value
 				matrix[i][col] -= value
 				matrix[row][col] += value
-				print("if 2 value: ",value,"i,j: ",i,j,"row,col:",row,col,"matrix:",matrix[i][j],matrix[row][j],matrix[i][col],matrix[row][col])
 			else:
 				value = rnd(0, int(MIN(matrix[i][j], matrix[row][col]) * eps))
 				value = float(float(value) / float(eps))
-				print("else 1 value: ",value,"i,j: ",i,j,"row,col:",row,col,"matrix:",matrix[i][j],matrix[row][j],matrix[i][col],matrix[row][col])
 				matrix[i][j] -= value
 				matrix[row][j] += value
 				matrix[i][col] += value
 				matrix[row][col] -= value
-				print("else 2 value: ",value,"i,j: ",i,j,"row,col:",row,col,"matrix:",matrix[i][j],matrix[row][j],matrix[i][col],matrix[row][col])
 	for i in range(matrixSize):
-		print(matrix[i])
+		for j in range(matrixSize):
+			print(round(matrix[i][j],2), end="\t")
+		print()
 
-def drawGraph(y_arr):
-	x_arr = [cnt for cnt in range(matrixSize)]
-	plt.plot(x_arr, y_arr, label="Не совсем, но цепь Маркова")
-	plt.ylabel("Количество входов")
-	plt.xlabel("Номер состояния")
+def drawGraph(x_arr):
+	print(x_arr)
+	plt.hist(x_arr, bins=50, alpha=0.5, label="Не совсем, но цепь Маркова")
+	plt.xlabel("Количество входов")
+	plt.ylabel("Номер состояния")
 	plt.legend()
 	plt.show()
 
@@ -62,11 +56,11 @@ def main():
 	iter = 0
 	state = 0
 	matrix = [[ 0.0 for cnt in range(matrixSize)] for cnt in range(matrixSize)]
-	vector = [0 for cnt in range(matrixSize)]
+	vector = [-1 for cnt in range(1000)]
 
 	genMatrix(matrix)
 	while (iter < 1000):
-		vector[state] += 1
+		vector[iter] = state
 		prob = rnd(0, eps) / eps
 		tmp = 0.0
 		for i in range(matrixSize):
