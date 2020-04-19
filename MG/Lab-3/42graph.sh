@@ -12,9 +12,9 @@ set mytics
 set mxtics
 
 # set format y "%d"
-# set xlabel "Graph's vertices" font "Arial, 16"
+set xlabel "Номер состояния" font "Arial, 16"
 # set format x "%d"
-# set ylabel "Estimated time" font "Arial, 16"
+set ylabel "Количество вхождений" font "Arial, 16"
 # set xtics font "Arial, 12"
 # set ytics font "Arial, 12"
 # set rmargin 4
