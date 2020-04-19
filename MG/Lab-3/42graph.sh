@@ -9,8 +9,8 @@ set border linewidth 1
 # set key top left
 set grid
 set mytics
-set mxtics
-
+set mxtics 
+set yrange [0:*] 
 # set format y "%d"
 set xlabel "Номер состояния" font "Arial, 16"
 # set format x "%d"
