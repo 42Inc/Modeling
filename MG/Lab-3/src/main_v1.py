@@ -67,20 +67,30 @@ def generator(matrix):
 			print(round(matrix[i][j],2), end="\t")
 		print()
 
-n = 5
 i = 0
 j = 0
+n = 10
 step = 0
 state = 0
 prob = 0.0
 eps = 100.0
-repeats = 1000
+repeats = 10000
 tmp_double = 0.0
 filename = "matrix.dat"
 vector = [-1 for cnt in range(repeats)]
 matrix = [[ 0.0 for cnt in range(n)] for cnt in range(n)]
-
-generator(matrix)
+matrix = [
+	[0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+	[0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+	[0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+	[0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0],
+	[0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0],
+	[0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0],
+	[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0],
+	[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1],
+	[0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5],
+	[0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4]]
+# generator(matrix)
 while (step < repeats):
 	vector[step] = state
 	prob = randint(0, eps) / eps
@@ -92,7 +102,7 @@ while (step < repeats):
 			break
 	step += 1
 
-pyplot.hist(vector,bins=70, label="Не совсем, но цепь Маркова", color='cyan')
+pyplot.hist(vector,bins=70, label="Вероятностное распределение", color='cyan')
 pyplot.xlabel("Кол-во вхождений")
 pyplot.ylabel("Номер состояния")
 pyplot.legend()

@@ -45,7 +45,7 @@ def genMatrix(matrix):
 		print()
 
 def drawGraph(data_arr, lgnd_vect):
-	plt.hist(data_arr, bins=30, alpha=0.5, label="Я хуй знает, что за граф")
+	plt.hist(data_arr, bins=30, alpha=0.5, label="Entries distribution")
 	plt.xlabel("Amount of entries")
 	plt.ylabel("Number of state")
 	plt.legend()
@@ -57,11 +57,23 @@ def main():
 	iter = 0
 	state = 0
 	matrix = [[ 0.0 for cnt in range(matrixSize)] for cnt in range(matrixSize)]
-	vector = [-1 for cnt in range(1000)]
+	vector = [-1 for cnt in range(10000)]
 	lgnd_vect = [0 for cnt in range(matrixSize)]
 
+	# matrix = [
+	# [0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+	# [0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+	# [0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+	# [0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0, 0.0],
+	# [0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0, 0.0],
+	# [0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0, 0.0],
+	# [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1, 0.0],
+	# [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5, 0.1],
+	# [0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.5],
+	# [0.5, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4]]
+
 	genMatrix(matrix)
-	while (iter < 1000):
+	while (iter < 10000):
 		lgnd_vect[state] += 1
 		vector[iter] = state
 		prob = rnd(0, eps) / eps
