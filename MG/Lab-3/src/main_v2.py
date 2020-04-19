@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-matrixSize = 5
+matrixSize = 10
 eps = 100.0
 filename = "matrix.dat"
 
@@ -44,12 +44,13 @@ def genMatrix(matrix):
 			print(round(matrix[i][j],2), end="\t")
 		print()
 
-def drawGraph(x_arr):
-	print(x_arr)
-	plt.hist(x_arr, bins=50, alpha=0.5, label="Не совсем, но цепь Маркова")
-	plt.xlabel("Количество входов")
-	plt.ylabel("Номер состояния")
+def drawGraph(data_arr, lgnd_vect):
+	plt.hist(data_arr, bins=30, alpha=0.5, label="Я хуй знает, что за граф")
+	plt.xlabel("Amount of entries")
+	plt.ylabel("Number of state")
 	plt.legend()
+	for width in range(len(lgnd_vect)):
+		plt.text(width, lgnd_vect[width], lgnd_vect[width], ha='center', va='bottom')
 	plt.show()
 
 def main():
@@ -57,9 +58,11 @@ def main():
 	state = 0
 	matrix = [[ 0.0 for cnt in range(matrixSize)] for cnt in range(matrixSize)]
 	vector = [-1 for cnt in range(1000)]
+	lgnd_vect = [0 for cnt in range(matrixSize)]
 
 	genMatrix(matrix)
 	while (iter < 1000):
+		lgnd_vect[state] += 1
 		vector[iter] = state
 		prob = rnd(0, eps) / eps
 		tmp = 0.0
@@ -69,7 +72,7 @@ def main():
 				state = i
 				break
 		iter += 1
-	drawGraph(vector)
+	drawGraph(vector, lgnd_vect)
 
 if __name__ == '__main__':
 	try:

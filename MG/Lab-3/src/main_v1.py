@@ -40,13 +40,13 @@ def generator(matrix):
 			while (col == j):
 				col = randint(0, n-1)
 
-			print(i,j, row, col)
 			if (direction):
 				if matrix[row][j] < matrix[i][col]:
 					min = matrix[row][j]
 				else:
 					min = matrix[i][col]
-				value = randint(0, min * eps) / eps
+				value = randint(0, int(min * eps))
+				value = float(float(value) / float(eps))
 				matrix[i][j] += value
 				matrix[row][j] -= value
 				matrix[i][col] -= value
@@ -56,24 +56,16 @@ def generator(matrix):
 					min = matrix[i][j]
 				else:
 					min = matrix[row][col]
-				value = randint(0, min * eps) / eps
+				value = randint(0, int(min * eps))
+				value = float(float(value) / float(eps))
 				matrix[i][j] -= value
 				matrix[row][j] += value
 				matrix[i][col] += value
 				matrix[row][col] -= value
-
 	for i in range(n):
 		for j in range(n):
-			print(matrix[i][j])
-	print()
-
-def drawGraph(y_arr):
-	x_arr = [cnt for cnt in range(n)]
-	pyplot.plot(x_arr, y_arr, label="Не совсем, но цепь Маркова")
-	pyplot.ylabel("Количество входов")
-	pyplot.xlabel("Номер состояния")
-	pyplot.legend()
-	pyplot.show()
+			print(round(matrix[i][j],2), end="\t")
+		print()
 
 n = 5
 i = 0
@@ -85,12 +77,12 @@ eps = 100.0
 repeats = 1000
 tmp_double = 0.0
 filename = "matrix.dat"
-vector = [0 for cnt in range(n)]
+vector = [-1 for cnt in range(repeats)]
 matrix = [[ 0.0 for cnt in range(n)] for cnt in range(n)]
 
 generator(matrix)
 while (step < repeats):
-	vector[state] += 1
+	vector[step] = state
 	prob = randint(0, eps) / eps
 	tmp_double = 0.0
 	for i in range(n):
@@ -99,4 +91,9 @@ while (step < repeats):
 			state = i
 			break
 	step += 1
-drawGraph(vector)
+
+pyplot.hist(vector,bins=70, label="Не совсем, но цепь Маркова", color='cyan')
+pyplot.xlabel("Кол-во вхождений")
+pyplot.ylabel("Номер состояния")
+pyplot.legend()
+pyplot.show()
