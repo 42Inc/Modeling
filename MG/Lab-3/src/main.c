@@ -15,7 +15,7 @@
   }
 #define EPS (int)(log10(eps))
 
-#define CHECKSUM 1
+#define CHECKSUM 0
 #define WITH_VECTOR 1
 
 #define MAX_BUFFER_SIZE 256
@@ -134,7 +134,7 @@ void dgemv(double** matrix, double* vector, double* result, int n, int m) {
   int j = 0;
   for (i = 0; i < n; ++i) {
     result[i] = 0.0;
-    for (j = 0; j < m; ++j) result[i] += matrix[i][j] * vector[j];
+    for (j = 0; j < m; ++j) result[i] += matrix[j][i] * vector[j];
   }
 }
 
