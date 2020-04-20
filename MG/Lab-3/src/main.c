@@ -6,6 +6,7 @@
 
 #define eps 1000.0
 #define MIN(x, y) (x < y ? x : y)
+#define ABS(x) ((x) < 0 ? (-(x)) : (x))
 #define SWAP(x, y, tmp) \
   {                     \
     tmp = x;            \
@@ -14,12 +15,13 @@
   }
 #define EPS (int)(log10(eps))
 
-#define CHECKSUM 0
-#define WITH_VECTOR 0
+#define CHECKSUM 1
+#define WITH_VECTOR 1
 
 #define MAX_BUFFER_SIZE 256
 static char buffer[MAX_BUFFER_SIZE];
 
+/* Подсчет суммы строки матрицы */
 double rowsum(int row, int n, double** matrix) {
   int i = 0;
   double result = 0.0;
@@ -29,6 +31,7 @@ double rowsum(int row, int n, double** matrix) {
   return result;
 }
 
+/* Подсчет суммы столбца матрицы */
 double colsum(int col, int n, double** matrix) {
   int i = 0;
   double result = 0.0;
@@ -125,14 +128,28 @@ int generator(int n, double** matrix) {
 }
 
 #if WITH_VECTOR == 1
+/* Умножение матрицы на вектор */
 void dgemv(double** matrix, double* vector, double* result, int n, int m) {
   int i = 0;
   int j = 0;
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < n; ++i) {
     result[i] = 0.0;
-    for (j = 0; j < m; j++) result[i] += matrix[i][j] * vector[j];
+    for (j = 0; j < m; ++j) result[i] += matrix[i][j] * vector[j];
   }
 }
+
+/* Проверка вектора на равновероятность */
+int is_equal_prob_vector(double* vector, int n) {
+  int i = 0;
+  double s = 1.0 / n;
+  for (i = 0; i < n; ++i) {
+    if ((ABS(vector[i] - s) > (1 / eps))) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
 #endif
 
 int main(int argc, char** argv) {
@@ -147,12 +164,6 @@ int main(int argc, char** argv) {
 
   /* Матрица */
   double** matrix = NULL;
-#if WITH_VECTOR == 1
-  double* tmp_double_ptr = NULL;
-  /* Вектор вероятности переходов */
-  double* vector = NULL;
-  double* vector_c = NULL;
-#endif
   /* Вектор встречаемости состояний */
   int* state_entries = NULL;
 
@@ -167,6 +178,15 @@ int main(int argc, char** argv) {
   int state = 0;
   /* Псевдослучайная вероятность для перехода. Точность - до eps-ых */
   double prob = 0.0;
+
+#if WITH_VECTOR == 1
+  double* tmp_double_ptr = NULL;
+  /* Вектор вероятности переходов */
+  double* vector = NULL;
+  double* vector_c = NULL;
+  int equal_state = state;
+  int save_trigger = 0;
+#endif
 
   /* Выделение памяти под матрицу и вектор(а) */
   matrix = (double**)malloc(n * sizeof(double*));
@@ -255,17 +275,24 @@ int main(int argc, char** argv) {
     /* Сохранение вхождения в состояние */
     ++state_entries[state];
 #if WITH_VECTOR == 1
-    /* Просчет вероятностей переходов */
-    dgemv(matrix, vector, vector_c, n, n);
-    /* Вывод вектора вероятностей переходов */
-    sprintf(buffer, "%%.0%dlf ", EPS);
-    for (i = 0; i < n; ++i) fprintf(stderr, buffer, vector_c[i]);
+    if (!is_equal_prob_vector(vector, n)) {
+      /* Просчет вероятностей переходов */
+      dgemv(matrix, vector, vector_c, n, n);
+      /* Вывод вектора вероятностей переходов */
+      sprintf(buffer, "%%.0%dlf ", EPS);
+      for (i = 0; i < n; ++i) fprintf(stderr, buffer, vector_c[i]);
 #if CHECKSUM == 1
-    sprintf(buffer, "%%.0%dlf", EPS);
-    fprintf(stderr, buffer, rowsum(0, n, &vector_c));
+      sprintf(buffer, "%%.0%dlf", EPS);
+      fprintf(stderr, buffer, rowsum(0, n, &vector_c));
 #endif
-    fprintf(stderr, "\n");
-    SWAP(vector, vector_c, tmp_double_ptr);
+      fprintf(stderr, "\n");
+      SWAP(vector, vector_c, tmp_double_ptr);
+    } else {
+      if (!save_trigger) {
+        equal_state = step;
+        save_trigger = 1;
+      }
+    }
 #endif
     /* Генерация вероятности перехода */
     prob = getrand(0, eps) / eps;
@@ -281,6 +308,9 @@ int main(int argc, char** argv) {
     ++step;
   } while (step < repeats);
 
+#if WITH_VECTOR == 1
+  fprintf(stderr, "Equal state : %d\n", equal_state);
+#endif
   /* Печать состояния. Состояние - количество */
   for (i = 0; i < n; ++i) fprintf(stdout, "%d %d\n", i, state_entries[i]);
   /*
