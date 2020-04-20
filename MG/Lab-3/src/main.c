@@ -1,10 +1,24 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#define eps 100.0
+#define eps 1000.0
 #define MIN(x, y) (x < y ? x : y)
+#define SWAP(x, y, tmp) \
+  {                     \
+    tmp = x;            \
+    x = y;              \
+    y = tmp;            \
+  }
+#define EPS (int)(log10(eps))
+
+#define CHECKSUM 0
+#define WITH_VECTOR 0
+
+#define MAX_BUFFER_SIZE 256
+static char buffer[MAX_BUFFER_SIZE];
 
 double rowsum(int row, int n, double** matrix) {
   int i = 0;
@@ -88,20 +102,38 @@ int generator(int n, double** matrix) {
       }
     }
   }
-
-  /* Печать матрицы в 2 знака + печать контрольных сумм */
+  /* Печать матрицы в EPS знаков + печать контрольных сумм */
   for (i = 0; i < n; ++i) {
-    for (j = 0; j < n; ++j) fprintf(stderr, "%.02lf ", matrix[i][j]);
+    sprintf(buffer, "%%.0%dlf ", EPS);
+    for (j = 0; j < n; ++j) fprintf(stderr, buffer, matrix[i][j]);
+#if CHECKSUM == 1
     /* Контрольная сумма строки */
-    fprintf(stderr, "%.02lf\n", rowsum(i, n, matrix));
+    sprintf(buffer, "%%.0%dlf\n", EPS);
+    fprintf(stderr, buffer, rowsum(i, n, matrix));
+#else
+    fprintf(stderr, "\n");
+#endif
   }
-
+#if CHECKSUM == 1
   /* Контрольная сумма столбцов */
-  for (i = 0; i < n; ++i) fprintf(stderr, "%.02lf ", colsum(i, n, matrix));
+  sprintf(buffer, "%%.0%dlf ", EPS);
+  for (i = 0; i < n; ++i) fprintf(stderr, buffer, colsum(i, n, matrix));
+#endif
 
   fprintf(stderr, "\n");
   return 0;
 }
+
+#if WITH_VECTOR == 1
+void dgemv(double** matrix, double* vector, double* result, int n, int m) {
+  int i = 0;
+  int j = 0;
+  for (i = 0; i < n; i++) {
+    result[i] = 0.0;
+    for (j = 0; j < m; j++) result[i] += matrix[i][j] * vector[j];
+  }
+}
+#endif
 
 int main(int argc, char** argv) {
   int i = 0;
@@ -115,8 +147,14 @@ int main(int argc, char** argv) {
 
   /* Матрица */
   double** matrix = NULL;
+#if WITH_VECTOR == 1
+  double* tmp_double_ptr = NULL;
+  /* Вектор вероятности переходов */
+  double* vector = NULL;
+  double* vector_c = NULL;
+#endif
   /* Вектор встречаемости состояний */
-  int* vector = NULL;
+  int* state_entries = NULL;
 
   /* Размер матрицы - по умолчанию 5 */
   int n = argv[1] ? atoi(argv[1]) : 5;
@@ -130,12 +168,19 @@ int main(int argc, char** argv) {
   /* Псевдослучайная вероятность для перехода. Точность - до eps-ых */
   double prob = 0.0;
 
-  /* Выделение памяти под матрицу */
+  /* Выделение памяти под матрицу и вектор(а) */
   matrix = (double**)malloc(n * sizeof(double*));
-  vector = (int*)calloc(n, sizeof(int));
-
+  state_entries = (int*)calloc(n, sizeof(int));
   /* Не выделилась память */
-  if (!matrix || !vector) return 255;
+  if (!matrix || !state_entries) return 255;
+#if WITH_VECTOR == 1
+  vector = (double*)calloc(n, sizeof(double));
+  vector_c = (double*)calloc(n, sizeof(double));
+  /* Не выделилась память */
+  if (!vector || !vector_c) return 255;
+  vector[state] = 1.0;
+#endif
+
   for (i = 0; i < n; ++i) {
     matrix[i] = (double*)malloc(n * sizeof(double));
     /* Не выделилась память */
@@ -145,7 +190,6 @@ int main(int argc, char** argv) {
       return 254;
     }
   }
-
   /* Если задан вызов из генератора */
   if (argv[2] && !strcmp(argv[2], "gen")) {
     m = gen;
@@ -176,19 +220,54 @@ int main(int argc, char** argv) {
 
     /* Печать матрицы в 2 знака + печать контрольных сумм */
     for (i = 0; i < n; ++i) {
-      for (j = 0; j < n; ++j) fprintf(stderr, "%.02lf ", matrix[i][j]);
+      sprintf(buffer, "%%.0%dlf ", EPS);
+      for (j = 0; j < n; ++j) fprintf(stderr, buffer, matrix[i][j]);
+#if CHECKSUM == 1
       /* Контрольная сумма строки */
-      fprintf(stderr, "%.02lf\n", rowsum(i, n, matrix));
+      sprintf(buffer, "%%.0%dlf\n", EPS);
+      fprintf(stderr, buffer, rowsum(i, n, matrix));
+#else
+      fprintf(stderr, "\n");
+#endif
     }
 
+#if CHECKSUM == 1
     /* Контрольная сумма столбцов */
-    for (i = 0; i < n; ++i) fprintf(stderr, "%.02lf ", colsum(i, n, matrix));
+    sprintf(buffer, "%%.0%dlf ", EPS);
+    for (i = 0; i < n; ++i) fprintf(stderr, buffer, colsum(i, n, matrix));
     fprintf(stderr, "\n");
+#endif
   }
 
+#if WITH_VECTOR == 1
+  fprintf(stderr, "\n");
+  /* Вывод вектора вероятностей переходов */
+  sprintf(buffer, "%%.0%dlf ", EPS);
+  for (i = 0; i < n; ++i) fprintf(stderr, buffer, vector[i]);
+#if CHECKSUM == 1
+  sprintf(buffer, "%%.0%dlf", EPS);
+  fprintf(stderr, buffer, rowsum(0, n, &vector));
+#endif
+  fprintf(stderr, "\n");
+#endif
+
   do {
+    /* Сохранение вхождения в состояние */
+    ++state_entries[state];
+#if WITH_VECTOR == 1
+    /* Просчет вероятностей переходов */
+    dgemv(matrix, vector, vector_c, n, n);
+    /* Вывод вектора вероятностей переходов */
+    sprintf(buffer, "%%.0%dlf ", EPS);
+    for (i = 0; i < n; ++i) fprintf(stderr, buffer, vector_c[i]);
+#if CHECKSUM == 1
+    sprintf(buffer, "%%.0%dlf", EPS);
+    fprintf(stderr, buffer, rowsum(0, n, &vector_c));
+#endif
+    fprintf(stderr, "\n");
+    SWAP(vector, vector_c, tmp_double_ptr);
+#endif
     /* Генерация вероятности перехода */
-    ++vector[state];
     prob = getrand(0, eps) / eps;
     /* Переход в состояние на основе вероятности */
     tmp_double = 0.0;
@@ -203,7 +282,7 @@ int main(int argc, char** argv) {
   } while (step < repeats);
 
   /* Печать состояния. Состояние - количество */
-  for (i = 0; i < n; ++i) fprintf(stdout, "%d %d\n", i, vector[i]);
+  for (i = 0; i < n; ++i) fprintf(stdout, "%d %d\n", i, state_entries[i]);
   /*
    * Mr. TeamLead, why only here you use a predefined constant,
    * ignoring all other returns?
