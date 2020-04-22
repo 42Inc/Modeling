@@ -28,4 +28,4 @@ set output './result/result_WR.png'
 plot for [col=2:3] './result/repeats.dat' using 1:col with linespoints ls col-1 title "WTF?"
 
 set output './result/result_Reject.png'
-plot './result/rej.dat' using 1:2 with linespoints ls 2 title "WTF?"
+plot './result/reject.dat' using 1:2 with linespoints ls 2 title "WTF?"
