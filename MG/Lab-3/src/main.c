@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 
-#define eps 1000.0
+#define eps 10000.0
 #define MIN(x, y) (x < y ? x : y)
 #define ABS(x) ((x) < 0 ? (-(x)) : (x))
 #define SWAP(x, y, tmp) \
@@ -313,6 +313,8 @@ int main(int argc, char** argv) {
 #endif
   /* Печать состояния. Состояние - количество */
   for (i = 0; i < n; ++i) fprintf(stdout, "%d %d\n", i, state_entries[i]);
+  for (j = 0; j < n; ++j) free(matrix[j]);
+  free(matrix);
   /*
    * Mr. TeamLead, why only here you use a predefined constant,
    * ignoring all other returns?
