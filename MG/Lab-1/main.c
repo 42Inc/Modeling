@@ -10,7 +10,7 @@
 #define ln log
 
 const double e = 2.71828182890459027;
-const double a = 0.8;
+const double a = 1.0;
 /*
  * Task
  * a      | [0; a_x]
