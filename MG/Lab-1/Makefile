@@ -32,4 +32,4 @@ clean:
 restruct: clean all
 
 run:
-	$(BIN_PATH)/main 1>./log.dat 2>./log_origin.dat && cat log.dat | ./agregator.py > log_a.dat && ./42graph.sh
+	$(BIN_PATH)/main 1>./log.dat 2>./log_origin.dat && ./42graph.sh
