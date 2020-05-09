@@ -35,7 +35,7 @@ const double e = 2.71828182890459027;
  *
  */
 
-const double a = 1.25;
+const double a = 4;
 
 double f(double x, double a_x) {
   double res = 0.0;

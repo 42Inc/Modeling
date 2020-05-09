@@ -31,4 +31,4 @@ rounded(x) = bin_width * (bin_number(x))
 
 plot  \
      "log_origin.dat" using 1:2 notitle linecolor rgb 'red' ,\
-     "log.dat" using (rounded($1)):(0.01) notitle smooth frequency linecolor rgb 'blue'
+     "log.dat" using (rounded($1)):(0.01) title "a = 4" smooth frequency linecolor rgb 'blue'
